@@ -22,6 +22,94 @@ int is_transpose(int M, int N, int A[N][M], int B[M][N]);
 char transpose_submit_desc[] = "Transpose submission";
 void transpose_submit(int M, int N, int A[N][M], int B[M][N])
 {
+	int i, j, k,tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7, tmp8;
+	if(M==32){
+	for(i=0; i<N; i+=8){
+		for(j=0; j<M ; j+=8){
+		for(k=i; k<(i+8); k++){
+			tmp1 = A[k][j];
+			tmp2 = A[k][j+1];
+			tmp3 = A[k][j+2];
+			tmp4 = A[k][j+3];
+			tmp5 = A[k][j+4];
+			tmp6 = A[k][j+5];
+			tmp7 = A[k][j+6];
+			tmp8 = A[k][j+7];
+
+			B[j][k] = tmp1;
+			B[j+1][k] = tmp2;
+			B[j+2][k] = tmp3;
+			B[j+3][k] = tmp4;
+			B[j+4][k] = tmp5;
+			B[j+5][k] = tmp6;
+			B[j+6][k] = tmp7;
+			B[j+7][k] = tmp8;
+		}
+
+		}
+	}}
+
+	if(M==64){
+		for( i =0; i<M; i+=8){
+			
+			for(j=0;j<M; j+=8){
+				for(k = i; k<i+4; k++){
+					tmp1 = A[k][j];
+					tmp2 = A[k][j+1];
+					tmp3 = A[k][j+2];
+					tmp4 = A[k][j+3];
+					tmp5 = A[k][j+4];
+					tmp6 = A[k][j+5];
+					tmp7 = A[k][j+6];
+					tmp8 = A[k][j+7];
+					
+					B[j][k] = tmp1;
+					B[j][k+4] = tmp5;
+					B[j+1][k] = tmp2;
+					B[j+1][k+4] = tmp6;
+					B[j+2][k]  =tmp3;
+					B[j+2][k+4] = tmp7;
+					B[j+3][k] = tmp4;
+					B[j+3][k+4] = tmp8;
+					
+				}
+				for(k=0; k<4; k++){
+					tmp1 = B[k+j][i+4];
+					tmp2 = B[k+j][i+5];
+					tmp3 = B[k+j][i+6];
+					tmp4 = B[k+j][i+7];
+
+					tmp5 = A[i+4][k+j];
+					tmp6 = A[i+5][k+j];
+					tmp7 = A[i+6][k+j];
+					tmp8 = A[i+7][k+j];
+
+					B[k+j][i+4] = tmp5;
+					B[k+j][i+5] = tmp6;
+					B[k+j][i+6] = tmp7;
+					B[k+j][i+7] = tmp8;
+
+					B[k+j+4][i] = tmp1;
+					B[k+j+4][i+1]  =tmp2;
+					B[k+j+4][i+2] = tmp3;
+					B[k+j+4][i+3] = tmp4;
+
+
+				}
+				for(k=0; k<4; k++){
+					tmp1 = A[k+i+4][j+4];
+					tmp2 = A[k+i+4][j+5];
+					tmp3 = A[k+i+4][j+6];
+					tmp4 = A[k+i+4][j+7];
+
+					B[j+4][k+i+4] = tmp1;
+					B[j+5][k+i+4] = tmp2;
+					B[j+6][k+i+4] = tmp3;
+					B[j+7][k+i+4] = tmp4;
+				}
+			}
+		}
+	}
 }
 
 /* 
